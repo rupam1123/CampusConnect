@@ -69,4 +69,4 @@ This deployment starts with a **new database**, as requested. No old MongoDB con
 
 The original Express backend is retained for a separate Node host. Copy `backend/.env.example` to `backend/.env` and configure MongoDB, a JWT secret, the admin password and Gmail SMTP credentials. Run `npm start --prefix backend`, then `npm run dev --prefix frontend`. Vite proxies `/api` and `/socket.io` to port 5000.
 
-That version accepts Gmail registrations while retaining support for existing IITK accounts. A usable SMTP configuration is required for signup and password-reset codes. The ChatGPT-hosted deployment uses neither these passwords nor MongoDB records.
+That version accepts Gmail registrations while retaining support for existing IITK accounts. Standalone email delivery is disabled by default. To enable signup and reset emails on a separate Node host, explicitly set ENABLE_EMAIL_DELIVERY=true and configure your own EMAIL_USER, EMAIL_PASS and matching OWNER_EMAIL. The ChatGPT-hosted deployment uses neither these passwords nor MongoDB records.
