@@ -1,0 +1,17 @@
+const router = require('express').Router();
+const ctrl = require('../controllers/courseController');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { courseAccess, requireRole } = require('../middleware/courseAccess');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+router.use(verifyToken);
+router.get('/managed', requireRole('Professor'), ctrl.getMyCourses);
+router.get('/enrolled', requireRole('Student'), ctrl.getEnrolledCourses);
+router.get('/:id/sessions', courseAccess(), ctrl.getCourseSessions);
+router.get('/:id/sessions/unread-counts', courseAccess(), ctrl.getUnreadCounts);
+router.post('/', requireRole('Professor'), ctrl.createCourse);
+router.delete('/:id', courseAccess(true), (req,res,next) => String(req.course.professor) === req.user.id ? next() : res.status(403).json({msg:'Only the course owner can delete this course'}), ctrl.deleteCourse);
+router.post('/:id/co-instructors', courseAccess(true), ctrl.addCoInstructor);
+router.post('/:id/students/manual', courseAccess(true), ctrl.addStudentManual);
+router.post('/:id/students/upload', courseAccess(true), upload.single('file'), ctrl.addStudentsExcel);
+module.exports = router;

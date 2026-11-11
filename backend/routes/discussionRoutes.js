@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const ctrl = require('../controllers/discussionController');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { courseAccess, requireRole } = require('../middleware/courseAccess');
+router.use(verifyToken);
+router.get('/session/:sessionId/comments', courseAccess(false,true), ctrl.getComments);
+router.post('/session/:sessionId/comments', courseAccess(false,true), ctrl.postComment);
+router.post('/session/:sessionId/mark-read', courseAccess(false,true), ctrl.markSessionRead);
+router.post('/session/:sessionId/feedback', requireRole('Student'), courseAccess(false,true), ctrl.submitFeedback);
+router.get('/session/:sessionId/feedback-status', requireRole('Student'), courseAccess(false,true), ctrl.checkFeedbackStatus);
+router.get('/course/:courseId/analytics', courseAccess(true), ctrl.getCourseAnalytics);
+module.exports = router;

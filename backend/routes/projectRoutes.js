@@ -1,0 +1,14 @@
+const router = require('express').Router();
+const ctrl = require('../controllers/projectController');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { requireRole } = require('../middleware/courseAccess');
+router.use(verifyToken);
+router.post('/', requireRole('Professor'), ctrl.createProject);
+router.get('/managed', requireRole('Professor'), ctrl.getProfProjects);
+router.put('/applications/:appId', requireRole('Professor'), ctrl.updateApplicationStatus);
+router.put('/:id', requireRole('Professor'), ctrl.updateProject);
+router.delete('/:id', requireRole('Professor'), ctrl.deleteProject);
+router.get('/my-applications', requireRole('Student'), ctrl.getMyApplications);
+router.get('/', ctrl.getAllProjects);
+router.post('/:projectId/apply', requireRole('Student'), ctrl.applyForProject);
+module.exports = router;
