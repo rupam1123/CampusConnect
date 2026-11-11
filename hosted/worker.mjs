@@ -117,7 +117,12 @@ async function handle(request, env) {
     const file = (await request.formData()).get('file');
     if (file && file.size <= 5 * 1024 * 1024) req.file = { buffer: new Uint8Array(await file.arrayBuffer()) };
     else fail(400, 'Upload an Excel file up to 5 MB');
-  } else if (!['GET', 'HEAD', 'DELETE'].includes(request.method)) req.body = await request.json();
+  } else if (!['GET', 'HEAD', 'DELETE'].includes(request.method)) {
+    const raw = await request.text();
+    if (raw.length > 1024 * 1024) fail(413, 'Request body is too large');
+    try { req.body = raw.trim() ? JSON.parse(raw) : {}; }
+    catch { fail(400, 'Request body must contain valid JSON'); }
+  }
   let response;
   const res = { code: 200, status(code) { this.code = code; return this; }, json(data) { response = json(data, this.code); return this; } };
   await controller(req, res);

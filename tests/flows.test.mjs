@@ -76,7 +76,8 @@ test('complete student, professor, course, discussion, feedback, project and adm
     comment = await ok(`/api/engage/session/${session._id}/comments`, student, 'POST', { text: 'Can you explain this topic?' });
     await ok(`/api/engage/session/${session._id}/comments`, owner, 'POST', { text: 'Yes, let us discuss it.', replyTo: comment._id });
     const comments = await ok(`/api/engage/session/${session._id}/comments`, student); assert.equal(comments.length, 2); assert.equal(comments[1].replyTo.text, comment.text);
-    await ok(`/api/engage/session/${session._id}/mark-read`, student, 'POST', {});
+    // The browser sends this fire-and-forget request without a JSON body.
+    await ok(`/api/engage/session/${session._id}/mark-read`, student, 'POST');
     assert.equal((await ok(`/api/courses/${course._id}/sessions/unread-counts`, student))[session._id], 0);
   });
   await t.test('feedback validation, duplicate protection and analytics', async () => {
