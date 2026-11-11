@@ -41,7 +41,9 @@ function validate(fields, data) {
   }
 }
 async function rows(name) {
-  const { results } = await storage.getStore().DB.prepare('SELECT data FROM records WHERE collection = ?').bind(name).all();
+  // Preserve insertion order when timestamps tie; SQLite's collection index is
+  // otherwise ordered by our random IDs, which can put a reply before its parent.
+  const { results } = await storage.getStore().DB.prepare('SELECT data FROM records WHERE collection = ? ORDER BY rowid ASC').bind(name).all();
   return results.map(row => JSON.parse(row.data));
 }
 async function persist(name, doc) {

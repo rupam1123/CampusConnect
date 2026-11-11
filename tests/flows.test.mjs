@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { localD1 } from '../scripts/d1-local.mjs';
 import worker from '../dist/server/index.js';
+import { storage, model, Schema } from '../hosted/store.mjs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const xlsx = require('../backend/node_modules/xlsx');
@@ -64,6 +65,14 @@ test('complete student, professor, course, discussion, feedback, project and adm
     assert.equal((await ok('/api/courses/managed', faculty)).length, 1);
   });
   await t.test('discussion replies, unread status and verified session membership', async () => {
+    await storage.run(env, async () => {
+      const Ordered = model('OrderingRegression', new Schema({ text: { type: String } }, { timestamps: true }));
+      const createdAt = '2026-11-11T10:00:00.000Z';
+      await Ordered.create({ _id: 'ffffffffffffffffffffffff', text: 'parent', createdAt });
+      await Ordered.create({ _id: '000000000000000000000001', text: 'reply', createdAt });
+      assert.deepEqual((await Ordered.find().sort({ createdAt: 1 })).map(doc => doc.text), ['parent', 'reply']);
+      await Ordered.deleteMany({});
+    });
     comment = await ok(`/api/engage/session/${session._id}/comments`, student, 'POST', { text: 'Can you explain this topic?' });
     await ok(`/api/engage/session/${session._id}/comments`, owner, 'POST', { text: 'Yes, let us discuss it.', replyTo: comment._id });
     const comments = await ok(`/api/engage/session/${session._id}/comments`, student); assert.equal(comments.length, 2); assert.equal(comments[1].replyTo.text, comment.text);
