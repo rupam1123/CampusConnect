@@ -676,6 +676,7 @@ export default function ManageCourses() {
                 <div className="grid grid-cols-2 gap-4">
                   <input
                     type="date"
+                    aria-label="Course start date"
                     required
                     value={courseForm.startDate}
                     onChange={(e) =>
@@ -688,6 +689,7 @@ export default function ManageCourses() {
                   />
                   <input
                     type="date"
+                    aria-label="Course end date"
                     required
                     value={courseForm.endDate}
                     onChange={(e) =>

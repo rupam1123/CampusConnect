@@ -13,7 +13,7 @@ export default function HostedLogin({ admin = false }) {
   const navigate = useNavigate();
   useEffect(() => {
     let active = true;
-    fetch(`${API_BASE}/api/auth/context`).then(readJson).then(data => { if (active) setContext(data); }).catch(err => { if (active) setError(err.message); });
+    fetch(`${API_BASE}/api/auth/context`).then(readJson).then(data => { if (active) { setContext(data); if (data.isOwner) setRole('Professor'); } }).catch(err => { if (active) setError(err.message); });
     return () => { active = false; };
   }, []);
   async function submit(e) {

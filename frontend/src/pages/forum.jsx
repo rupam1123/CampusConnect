@@ -87,9 +87,9 @@ function Forum() {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ voteType: newVoteType }),
-      });
+      }).then(readJson);
     } catch (err) {
-      console.error(err);
+      setToastMessage(err.message);
       fetchPosts();
     }
   };
@@ -103,14 +103,14 @@ function Forum() {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify(newPost),
-      });
+      }).then(readJson);
       fetchPosts();
       setShowNewPostModal(false);
       setNewPost({ title: "", content: "", tag: "General" });
       setToastMessage("Your post has been published to the forum!");
       setTimeout(() => setToastMessage(null), 3000);
     } catch (err) {
-      console.error(err);
+      setToastMessage(err.message);
     }
   };
 
@@ -126,10 +126,10 @@ function Forum() {
         `${API_BASE}/api/forum/posts/${postId}/comments`,
         { headers: getHeaders() },
       );
-      const data = await res.json();
+      const data = await readJson(res);
       setComments(data);
     } catch (err) {
-      console.error(err);
+      setToastMessage(err.message);
     }
   };
 
@@ -141,18 +141,18 @@ function Forum() {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ content: newComment }),
-      });
+      }).then(readJson);
       setNewComment("");
 
       const res = await fetch(
         `${API_BASE}/api/forum/posts/${postId}/comments`,
         { headers: getHeaders() },
       );
-      const data = await res.json();
+      const data = await readJson(res);
       setComments(data);
       fetchPosts();
     } catch (err) {
-      console.error(err);
+      setToastMessage(err.message);
     }
   };
 
@@ -172,7 +172,7 @@ function Forum() {
             <CheckCircle size={24} />
             <div>
               <p className="text-sm font-black uppercase tracking-widest text-emerald-200">
-                Success
+                Notice
               </p>
               <p className="font-bold">{toastMessage}</p>
             </div>

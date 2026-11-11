@@ -208,9 +208,9 @@ function ProfessorProject() {
     try {
       await fetch(`${API_BASE}/api/projects/applications/${appId}`, {
         method: "PUT", headers: getHeaders(), body: JSON.stringify({ status: newStatus }),
-      });
+      }).then(readJson);
       fetchProjects();
-    } catch (err) { console.error(err); }
+    } catch (err) { showToast(err.message, 'error'); }
   };
 
   return (

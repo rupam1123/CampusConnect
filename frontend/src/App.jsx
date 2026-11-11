@@ -1,22 +1,23 @@
+import { lazy, Suspense } from 'react';
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // Auth & Admin
-import Login from "./pages/login.jsx";
-import Signup from "./pages/signup.jsx";
-import Forgot from "./pages/forgot.jsx";
-import AdminLogin from "./pages/adminLogin.jsx";
-import AdminDashboard from "./pages/adminDashboard.jsx";
+const Login = lazy(() => import('./pages/login.jsx'));
+const Signup = lazy(() => import('./pages/signup.jsx'));
+const Forgot = lazy(() => import('./pages/forgot.jsx'));
+const AdminLogin = lazy(() => import('./pages/adminLogin.jsx'));
+const AdminDashboard = lazy(() => import('./pages/adminDashboard.jsx'));
 
 // Pages
-import SessionDetail from "./pages/SessionDetail";
-import ProfessorDashboard from "./pages/professor_dashboard.jsx";
-import ManageCourses from "./pages/ManageCourses.jsx";
-import Projects from "./pages/projects.jsx";
-import Forum from "./pages/forum.jsx";
+const SessionDetail = lazy(() => import('./pages/SessionDetail.jsx'));
+const ProfessorDashboard = lazy(() => import('./pages/professor_dashboard.jsx'));
+const ManageCourses = lazy(() => import('./pages/ManageCourses.jsx'));
+const Projects = lazy(() => import('./pages/projects.jsx'));
+const Forum = lazy(() => import('./pages/forum.jsx'));
 
-import ProfessorProjects from "./pages/professor_project.jsx";
-import CourseViewer from "./pages/CourseViewer.jsx";
+const ProfessorProjects = lazy(() => import('./pages/professor_project.jsx'));
+const CourseViewer = lazy(() => import('./pages/CourseViewer.jsx'));
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import HostedLogin from './pages/HostedLogin.jsx';
 import { HOSTED } from './lib/api';
@@ -29,6 +30,7 @@ function CoursesRoute() {
 function App() {
   return (
     <BrowserRouter>
+      <Suspense fallback={<div role="status" className="min-h-screen grid place-items-center text-indigo-600 font-bold">Loading CampusConnect…</div>}>
       <Routes>
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -110,6 +112,7 @@ function App() {
         {/* 404 CATCH-ALL */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

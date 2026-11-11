@@ -99,7 +99,7 @@ export default function SessionDetail() {
       const timer = setInterval(refresh, 3000);
       return () => { active = false; clearInterval(timer); };
     }
-    const socket = io(API_BASE);
+    const socket = io(API_BASE || undefined, { auth: { token: localStorage.getItem('token') } });
 
     // Tell the server to put us in a room specific to this class session
     socket.on('connect', () => socket.emit("join_room", sessionId));
@@ -365,6 +365,7 @@ export default function SessionDetail() {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Type a message..."
+                  aria-label="Message"
                   className="flex-1 px-5 py-4 bg-slate-100 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-indigo-400 font-bold text-sm transition-all resize-none min-h-[56px] max-h-32 custom-scrollbar"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
@@ -375,6 +376,7 @@ export default function SessionDetail() {
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={!newComment.trim()}
                   className="bg-indigo-600 disabled:bg-slate-300 text-white p-4 h-[56px] rounded-[1.5rem] shadow-md hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center"
                 >

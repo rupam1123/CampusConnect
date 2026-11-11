@@ -108,6 +108,7 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2 font-black text-xl">
           <ShieldCheck className="text-indigo-400" /> Admin Console
         </div>
+        <button onClick={() => navigate('/login')} className="text-sm font-bold text-indigo-200 hover:text-white">Open workspace</button>
         <button
           onClick={() => { localStorage.removeItem("adminToken"); navigate("/admin-login"); }}
           className="flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-white transition-colors"

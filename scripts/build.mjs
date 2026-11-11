@@ -19,7 +19,7 @@ await collect('frontend/dist');
 await writeFile('hosted/generated-assets.mjs', `export const assets = ${JSON.stringify(assets)};\n`);
 await mkdir('dist/server', { recursive: true });
 await mkdir('dist/.openai', { recursive: true });
-await build({ entryPoints: ['hosted/worker.mjs'], outfile: 'dist/server/index.js', bundle: true, format: 'esm', platform: 'neutral', mainFields: ['module', 'main'], target: 'es2022', minify: true, external: ['node:async_hooks'], alias: { mongoose: path.resolve('hosted/store.mjs'), bcrypt: path.resolve('hosted/crypto-stub.cjs'), jsonwebtoken: path.resolve('hosted/crypto-stub.cjs') }, define: { 'process.env.JWT_SECRET': 'undefined', 'process.env.ADMIN_PASSWORD': 'undefined' } });
+await build({ entryPoints: ['hosted/worker.mjs'], outfile: 'dist/server/index.js', bundle: true, format: 'esm', platform: 'neutral', mainFields: ['module', 'main'], target: 'es2022', minify: true, external: ['node:async_hooks'], alias: { xlsx: path.resolve('backend/node_modules/xlsx/xlsx.mjs'), mongoose: path.resolve('hosted/store.mjs'), bcrypt: path.resolve('hosted/crypto-stub.cjs'), jsonwebtoken: path.resolve('hosted/crypto-stub.cjs') }, define: { 'process.env.JWT_SECRET': 'undefined', 'process.env.ADMIN_PASSWORD': 'undefined' } });
 await copyFile('.openai/hosting.json', 'dist/.openai/hosting.json');
 await cp('drizzle', 'dist/drizzle', { recursive: true });
 await writeFile('dist/server/wrangler.json', JSON.stringify({ name: 'campusconnect-rupam', main: 'index.js', compatibility_date: '2026-03-01', compatibility_flags: ['nodejs_compat'], d1_databases: [{ binding: 'DB', database_name: 'campusconnect', database_id: 'local', migrations_dir: '../drizzle' }] }, null, 2));
